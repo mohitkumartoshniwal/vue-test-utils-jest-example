@@ -4,14 +4,22 @@ import flushPromises from 'flush-promises'
 import Foo2 from '@/components/Foo2'
 import axios from 'axios'
 
+
 jest.mock('axios', () => ({
-  get: jest.fn()
+  get: jest.fn().mockReturnValue(Promise.resolve({data:"value"}))
 }))
+
+// this one also works for all tests below
+// for third test to work , uncomment "axios.get.mockResolvedValue({data:"value"})" in it
+// jest.mock('axios', () => ({
+//   get: jest.fn()
+// }))
+
 
 // the below one is going to work for nextTick and setTimeout test case 
 //but will fail for flushpromises one
 // jest.mock('axios', () => ({
-//   get: Promise.resolve('value')
+//   get: Promise.resolve({data:"value"})
 // }))
 
 
@@ -47,7 +55,7 @@ it('fetches async when a button is clicked using setTimeout', async () => {
 
 it('fetches async when a button is clicked using flushPromises', async () => {
     const wrapper = shallowMount(Foo2)
-    axios.get.mockResolvedValue({data:"value"})
+    // axios.get.mockResolvedValue({data:"value"})
     await wrapper.find('button').trigger('click')
     await flushPromises()
     // console.log("abcexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",wrapper.text());

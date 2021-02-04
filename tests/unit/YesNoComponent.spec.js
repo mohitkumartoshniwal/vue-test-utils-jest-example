@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import sinon, { assert } from 'sinon'
 
 it('Click on yes id button calls our method with argument "yes"', async () => {
-  const spy = sinon.spy()
+  const spy = jest.fn()
   const wrapper = mount(YesNoComponent, {
     propsData: {
       callMe: spy
@@ -11,17 +11,16 @@ it('Click on yes id button calls our method with argument "yes"', async () => {
   })
   await wrapper.find('button#yes').trigger('click')
   //this test should fail but it is passing, something is wrong
-    expect(spy.calledWithExactly("xxxxxxxxxxxxxxxxxxxxx"));
+  expect(spy).toBeCalledWith("yes");
 })
 
 it('Click on no class button calls our method with argument "no"', async () => {
-    const spy = sinon.spy()
+  const spy = jest.fn()
     const wrapper = mount(YesNoComponent, {
       propsData: {
         callMe: spy
       }
     })
     await wrapper.find('button.no').trigger('click')
-  
-    spy.alwaysCalledWithExactly('no');
+    expect(spy).toBeCalledWith("no");
   })
