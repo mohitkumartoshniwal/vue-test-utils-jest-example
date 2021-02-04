@@ -1,9 +1,19 @@
+
 import { shallowMount } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Foo2 from '@/components/Foo2'
+import axios from 'axios'
+
 jest.mock('axios', () => ({
-  get: Promise.resolve('value')
+  get: jest.fn()
 }))
+
+// the below one is going to work for nextTick and setTimeout test case 
+//but will fail for flushpromises one
+// jest.mock('axios', () => ({
+//   get: Promise.resolve('value')
+// }))
+
 
 it('fetches async when a button is clicked using nextTick', () => {
   const wrapper = shallowMount(Foo2)
@@ -34,10 +44,14 @@ it('fetches async when a button is clicked using setTimeout', async () => {
   })
 
 
-// its failing, find reason
-// it('fetches async when a button is clicked using flushPromises', async () => {
-//     const wrapper = shallowMount(Foo2)
-//     await wrapper.find('button').trigger('click')
-//     await flushPromises()
-//     expect(wrapper.text()).toBe('value')
-//   })
+
+it('fetches async when a button is clicked using flushPromises', async () => {
+    const wrapper = shallowMount(Foo2)
+    axios.get.mockResolvedValue({data:"value"})
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+    // console.log("abcexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",wrapper.text());
+    expect(wrapper.text()).toBe('value')
+
+  })
+
